@@ -470,6 +470,183 @@
 
         // Focus password input on load
         passwordInput.focus();
-    </script>
-</body>
-</html>
+   <script>
+    // Dark mode detection
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        if (event.matches) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    });
+
+    // Elements
+    const passwordScreen = document.getElementById('passwordScreen');
+    const messageScreen = document.getElementById('messageScreen');
+    const celebrationScreen = document.getElementById('celebrationScreen');
+    const sadScreen = document.getElementById('sadScreen');
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordInput = document.getElementById('passwordInput');
+    const errorMessage = document.getElementById('errorMessage');
+    const yesButton = document.getElementById('yesButton');
+    const noButton = document.getElementById('noButton');
+    const backButton = document.getElementById('backButton');
+    const backFromSadButton = document.getElementById('backFromSadButton');
+
+    // Function to show only one screen at a time
+    function showScreen(screenToShow) {
+        // Hide all screens first
+        passwordScreen.classList.add('hidden');
+        messageScreen.classList.add('hidden');
+        celebrationScreen.classList.add('hidden');
+        sadScreen.classList.add('hidden');
+        
+        // Show the selected screen
+        if (screenToShow === 'password') {
+            passwordScreen.classList.remove('hidden');
+        } else if (screenToShow === 'message') {
+            messageScreen.classList.remove('hidden');
+        } else if (screenToShow === 'celebration') {
+            celebrationScreen.classList.remove('hidden');
+        } else if (screenToShow === 'sad') {
+            sadScreen.classList.remove('hidden');
+        }
+    }
+
+    // Password handling
+    passwordForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const password = passwordInput.value.trim();
+        
+        if (password === 'hilina') {
+            showScreen('message');
+            errorMessage.classList.add('hidden');
+        } else {
+            errorMessage.classList.remove('hidden');
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    });
+
+    // Create confetti
+    function createConfetti() {
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                celebrationScreen.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 5000);
+            }, i * 50);
+        }
+    }
+
+    // Create fireworks
+    function createFireworks() {
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                firework.style.left = Math.random() * 100 + 'vw';
+                firework.style.top = Math.random() * 100 + 'vh';
+                celebrationScreen.appendChild(firework);
+                
+                setTimeout(() => {
+                    if (firework.parentNode) {
+                        firework.parentNode.removeChild(firework);
+                    }
+                }, 1000);
+            }, i * 200);
+        }
+    }
+
+    // Music functionality
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const musicPlayer = document.getElementById('musicPlayer');
+    const toggleMusicButton = document.getElementById('toggleMusicButton');
+    const musicIcon = document.getElementById('musicIcon');
+    const musicText = document.getElementById('musicText');
+    let musicPlaying = false;
+
+    function startMusic() {
+        // Michael Jackson - You Rock My World (YouTube)
+        const videoId = 'mNjUvVpSn9M'; // Official You Rock My World video
+        youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&controls=0`;
+        musicPlayer.classList.remove('hidden');
+        musicPlaying = true;
+        updateMusicButton();
+    }
+
+    function stopMusic() {
+        youtubePlayer.src = '';
+        musicPlayer.classList.add('hidden');
+        musicPlaying = false;
+        updateMusicButton();
+    }
+
+    function updateMusicButton() {
+        if (musicPlaying) {
+            musicIcon.textContent = '🔊';
+            musicText.textContent = 'Pause Music';
+        } else {
+            musicIcon.textContent = '🔇';
+            musicText.textContent = 'Play Music';
+        }
+    }
+
+    toggleMusicButton.addEventListener('click', () => {
+        if (musicPlaying) {
+            stopMusic();
+        } else {
+            startMusic();
+        }
+    });
+
+    // Button handlers
+    yesButton.addEventListener('click', () => {
+        showScreen('celebration');
+        createConfetti();
+        createFireworks();
+        startMusic();
+        
+        // Continue creating confetti every 3 seconds
+        const confettiInterval = setInterval(() => {
+            if (!celebrationScreen.classList.contains('hidden')) {
+                createConfetti();
+            } else {
+                clearInterval(confettiInterval);
+            }
+        }, 3000);
+    });
+
+    noButton.addEventListener('click', () => {
+        showScreen('sad');
+    });
+
+    backButton.addEventListener('click', () => {
+        showScreen('message');
+        stopMusic();
+    });
+
+    backFromSadButton.addEventListener('click', () => {
+        showScreen('message');
+    });
+
+    // Initialize - show password screen first
+    showScreen('password');
+
+    // Focus password input on load
+    passwordInput.focus();
+</script>
