@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#5D5CDE',
+                        'dark-bg': '#181818'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .heart-float {
+            animation: heartFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes heartFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .pulse-heart {
+            animation: pulseHeart 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confettiFall 3s linear infinite;
+        }
+        
+        .confetti:nth-child(2n) { background: #4ecdc4; }
+        .confetti:nth-child(3n) { background: #45b7d1; }
+        .confetti:nth-child(4n) { background: #96ceb4; }
+        .confetti:nth-child(5n) { background: #ffeaa7; }
+        .confetti:nth-child(6n) { background: #fd79a8; }
+        
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: fireworkExplode 1s ease-out infinite;
+        }
+        
+        @keyframes fireworkExplode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(20);
+                opacity: 0;
+            }
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .celebration-bg {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+        }
+        
+        /* Ensure proper screen hiding */
+        .screen-hidden {
+            display: none !important;
+        }
+        
+        .screen-visible {
+            display: flex !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-4">
+    <!-- Password Screen -->
+    <div id="passwordScreen" class="w-full max-w-md">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 fade-in">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Enter Password</h1>
+                <p class="text-gray-600 dark:text-gray-300">Please enter the password to continue</p>
+            </div>
+            
+            <form id="passwordForm">
+                <div class="mb-6">
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        placeholder="Enter password" 
+                        class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors text-base"
+                >
+                    Unlock
+                </button>
+                
+                <div id="errorMessage" class="hidden mt-4 p-3 bg-red-100 border border-red-300 rounded-lg">
+                    <p class="text-red-700 text-sm text-center">Incorrect password. Please try again.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Message Screen -->
+    <div id="messageScreen" class="hidden w-full max-w-2xl">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center fade-in">
+            <div class="mb-8">
+                <div class="text-6xl mb-4 heart-float">🎂</div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 slide-up">
+                    Happy Birthday Hilina
+                </h1>
+            </div>
+            
+            <div class="mb-8 slide-up" style="animation-delay: 0.3s;">
+                <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    You're that girl--the one who ruined me for anyone else.
+                </p>
+                <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                    If I could give you one birthday wish, it'd be me
+                </p>
+                <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400">
+                    I genuinely Miss u ❤️😔
+                </p>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mt-4">
+                    Give me a second chance
+                </p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center slide-up" style="animation-delay: 0.6s;">
+                <button 
+                    id="yesButton" 
+                    class="px-8 py-3 bg-green-500 text-white text-lg font-semibold rounded-xl hover:bg-green-600 transition-colors pulse-heart"
+                >
+                    Yes ❤️
+                </button>
+                <button 
+                    id="noButton" 
+                    class="px-8 py-3 bg-red-500 text-white text-lg font-semibold rounded-xl hover:bg-red-600 transition-colors"
+                >
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Screen -->
+    <div id="celebrationScreen" class="hidden w-full h-full fixed inset-0 celebration-bg">
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Confetti will be dynamically added here -->
+        </div>
+        
+        <!-- Hidden YouTube player for music -->
+        <div id="musicPlayer" class="hidden">
+            <iframe 
+                id="youtubePlayer"
+                width="0" 
+                height="0" 
+                src="" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        
+        <div class="flex items-center justify-center h-full p-4">
+            <div class="text-center text-white bounce-in">
+                <div class="text-8xl mb-6">🎉</div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                    YAYYYY! 🎊
+                </h1>
+                <p class="text-xl md:text-2xl mb-6">
+                    Thank you for giving me another chance!you wont regret it text me typing HR ❤️
+                </p>
+                <div class="text-5xl mb-6">
+                    🥳💕🎂✨🌟
+                </div>
+                <p class="text-lg mb-6 opacity-90">
+                    🎵 "You Rock My World" - Michael Jackson 🎵 
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button 
+                        id="backButton" 
+                        class="px-6 py-3 bg-white text-purple-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors"
+                    >
+                        Back to Message
+                    </button>
+                    <button 
+                        id="toggleMusicButton" 
+                        class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors flex items-center gap-2"
+                    >
+                        <span id="musicIcon">🔊</span>
+                        <span id="musicText">Pause Music</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sad Response Screen -->
+    <div id="sadScreen" class="hidden w-full max-w-2xl">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center fade-in">
+            <div class="text-6xl mb-6">😢</div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                I understand...
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
+                I hope you have a wonderful birthday anyway 💙
+            </p>
+            <button 
+                id="backFromSadButton" 
+                class="px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+            >
+                Go Back
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Elements
+        const passwordScreen = document.getElementById('passwordScreen');
+        const messageScreen = document.getElementById('messageScreen');
+        const celebrationScreen = document.getElementById('celebrationScreen');
+        const sadScreen = document.getElementById('sadScreen');
+        const passwordForm = document.getElementById('passwordForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const backButton = document.getElementById('backButton');
+        const backFromSadButton = document.getElementById('backFromSadButton');
+
+        // Screen management function
+        function showScreen(screenToShow) {
+            // Hide all screens
+            passwordScreen.className = 'w-full max-w-md screen-hidden';
+            messageScreen.className = 'w-full max-w-2xl screen-hidden';
+            celebrationScreen.className = 'w-full h-full fixed inset-0 celebration-bg screen-hidden';
+            sadScreen.className = 'w-full max-w-2xl screen-hidden';
+            
+            // Show the selected screen
+            if (screenToShow === 'password') {
+                passwordScreen.className = 'w-full max-w-md screen-visible';
+            } else if (screenToShow === 'message') {
+                messageScreen.className = 'w-full max-w-2xl screen-visible';
+            } else if (screenToShow === 'celebration') {
+                celebrationScreen.className = 'w-full h-full fixed inset-0 celebration-bg screen-visible';
+            } else if (screenToShow === 'sad') {
+                sadScreen.className = 'w-full max-w-2xl screen-visible';
+            }
+        }
+
+        // Password handling
+        passwordForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = passwordInput.value.trim();
+            
+            if (password === 'hilina') {
+                showScreen('message');
+                errorMessage.classList.add('hidden');
+            } else {
+                errorMessage.classList.remove('hidden');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        // Create confetti
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    celebrationScreen.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 5000);
+                }, i * 50);
+            }
+        }
+
+        // Create fireworks
+        function createFireworks() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                    firework.style.left = Math.random() * 100 + 'vw';
+                    firework.style.top = Math.random() * 100 + 'vh';
+                    celebrationScreen.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        if (firework.parentNode) {
+                            firework.parentNode.removeChild(firework);
+                        }
+                    }, 1000);
+                }, i * 200);
+            }
+        }
+
+        // Music functionality
+        const youtubePlayer = document.getElementById('youtubePlayer');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const toggleMusicButton = document.getElementById('toggleMusicButton');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+        let musicPlaying = false;
+
+        function startMusic() {
+            // Michael Jackson - You Rock My World (YouTube)
+            const videoId = 'mNjUvVpSn9M'; // Official You Rock My World video
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=0&loop=1&playlist=${videoId}&controls=0`;
+            musicPlayer.classList.remove('hidden');
+            musicPlaying = true;
+            updateMusicButton();
+        }
+
+        function stopMusic() {
+            youtubePlayer.src = '';
+            musicPlayer.classList.add('hidden');
+            musicPlaying = false;
+            updateMusicButton();
+        }
+
+        function updateMusicButton() {
+            if (musicPlaying) {
+                musicIcon.textContent = '🔊';
+                musicText.textContent = 'Pause Music';
+            } else {
+                musicIcon.textContent = '🔇';
+                musicText.textContent = 'Play Music';
+            }
+        }
+
+        toggleMusicButton.addEventListener('click', () => {
+            if (musicPlaying) {
+                stopMusic();
+            } else {
+                startMusic();
+            }
+        });
+
+        // Button handlers
+        yesButton.addEventListener('click', () => {
+            showScreen('celebration');
+            createConfetti();
+            createFireworks();
+            
+            // Start playing Michael Jackson - You Rock My World
+            startMusic();
+            
+            // Continue creating confetti every 3 seconds
+            const confettiInterval = setInterval(() => {
+                if (!celebrationScreen.classList.contains('screen-hidden')) {
+                    createConfetti();
+                } else {
+                    clearInterval(confettiInterval);
+                }
+            }, 3000);
+        });
+
+        noButton.addEventListener('click', () => {
+            showScreen('sad');
+        });
+
+        backButton.addEventListener('click', () => {
+            showScreen('message');
+            stopMusic(); // Stop music when leaving celebration
+        });
+
+        backFromSadButton.addEventListener('click', () => {
+            showScreen('message');
+        });
+
+        // Initialize - show password screen first
+        showScreen('password');
+
+        // Focus password input on load
+        passwordInput.focus();
+    </script>
+</body>
+</html>
